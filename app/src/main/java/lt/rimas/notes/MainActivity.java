@@ -2,6 +2,7 @@ package lt.rimas.notes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -62,8 +63,26 @@ public class MainActivity extends AppCompatActivity {
         binding.notesListView.setOnItemLongClickListener(
                 (adapterView, view, position, l) ->{
                     Log.i(TAG, "OnListItem_Long_Click:" + adapterView.getItemAtPosition(position));
-                   return true;
+                    Note note = (Note) adapterView.getItemAtPosition(position);
+                    showRemoveAllertDialog(note);
+                    return true;
                 }
         );
+    }
+
+    private void showRemoveAllertDialog(Note note) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.
+                setMessage("Do you really want to remove this item?")
+                .setPositiveButton("Yes", (dialogInterface, i) ->  {
+            removeNoteFromList(note);
+        })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void removeNoteFromList(Note note) {
+        notes.remove(note);
+        adapter.notifyDataSetChanged();
     }
 }
