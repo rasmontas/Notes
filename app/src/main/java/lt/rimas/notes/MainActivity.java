@@ -3,6 +3,8 @@ package lt.rimas.notes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
         binding.notesListView.setOnItemClickListener(
                 (adapterView, view, position, l) -> {
 
-                    Log.i(TAG, "OnListItemClicked : " + adapterView.getItemAtPosition(position));
-                    Log.i(TAG, "OnListItemClicked : " + position);
-
+//                    Log.i(TAG, "OnListItemClicked : " + adapterView.getItemAtPosition(position));
+//                    Log.i(TAG, "OnListItemClicked : " + position);
+                    Note note = (Note) adapterView.getItemAtPosition(position);
+                    openNoteDetailsActivity(note);
                 }
         );
     }
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpFloatingActionButtonClick() {
         binding.floatingActionButton.setOnClickListener(
                 view -> {
-                    showSnackbar("FAB was clicked");
+                    openNoteDetailsActivity(new Note());
                 }
         );
     }
@@ -105,5 +108,29 @@ public class MainActivity extends AppCompatActivity {
         notes.remove(note);
         adapter.notifyDataSetChanged();
         showSnackbar("Note with id: " + note.getId() + " was removed");
+    }
+
+    private void openNoteDetailsActivity(Note note) {
+
+
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, note.toString());  ---SEND
+//        sendIntent.setType("text/plain");
+//
+//        Intent shareIntent = Intent.createChooser(sendIntent, null);
+//
+//        startActivity(shareIntent);
+//        String videoId = "0xB3T4MPEr0";
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+//        intent.putExtra("VIDEO_ID", videoId);
+//        startActivity(intent);                        -------YOUTUBE
+        Intent intent = new Intent(this, NoteDetails.class);
+        intent.putExtra("id", note.getId());
+        intent.putExtra("title", note.getTitle());
+        intent.putExtra("description", note.getDescription());
+        intent.putExtra("creation", note.getCreationDate());
+        intent.putExtra("updateDate", note.getUpdateDate());
+        startActivity(intent);
+
     }
 }
