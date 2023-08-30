@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setUpListView();
-        setUpListViewClickListener();
+        setUpListViewItemClick();
+        setUpListViewItemLongClick();
     }
 
     private void setUpListView() {
@@ -46,13 +47,22 @@ public class MainActivity extends AppCompatActivity {
         binding.notesListView.setAdapter(adapter);
     }
 
-    private void setUpListViewClickListener() {
+    private void setUpListViewItemClick() {
         binding.notesListView.setOnItemClickListener(
                 (adapterView, view, position, l) -> {
 
                     Log.i(TAG, "OnListItemClicked : " +  adapterView.getItemAtPosition(position));
                     Log.i(TAG, "OnListItemClicked : " +  position);
 
+                }
+        );
+    }
+
+    private void setUpListViewItemLongClick() {
+        binding.notesListView.setOnItemLongClickListener(
+                (adapterView, view, position, l) ->{
+                    Log.i(TAG, "OnListItem_Long_Click:" + adapterView.getItemAtPosition(position));
+                   return true;
                 }
         );
     }
