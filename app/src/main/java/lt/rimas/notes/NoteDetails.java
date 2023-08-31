@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 
 import lt.rimas.notes.databinding.ActivityNoteDetailsBinding;
 
@@ -23,7 +24,7 @@ public class NoteDetails extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Intent intent = getIntent();
-        int noteId =0;
+        int noteId = 0;
 //        int id = intent.getIntExtra("id", 0);
 //        String title = intent.getStringExtra("title");
 //        String description = intent.getStringExtra("description");
@@ -32,18 +33,19 @@ public class NoteDetails extends AppCompatActivity {
 //                id + "\n" + "Title: " + title + "\n" + description
 //        );
         if (intent.getExtras() != null) {
-            noteId = intent.getIntExtra("note", 0);
+            noteId = intent.getIntExtra("noteId", 0);
 
         }
         displayNoteDetails(noteId);
+        setUpSaveButton();
     }
 
     private void displayNoteDetails(int noteId) {
 
-        if (noteId ==0){
+        if (noteId == 0) {
             note = new Note();
 
-        }else {
+        } else {
             getNoteFromRepository(noteId);
 
         }
@@ -61,8 +63,58 @@ public class NoteDetails extends AppCompatActivity {
 
     private void getNoteFromRepository(int noteId) {
         note = UseCaseRepository.notes.stream()
-                 .filter(note -> note.getId() == noteId)
-                 .findFirst()
-                 .get();
+                .filter(note -> note.getId() == noteId)
+                .findFirst()
+                .get();
+    }
+
+    private void setUpSaveButton() {
+        binding.saveButton.setOnClickListener(
+                v -> {
+
+                    addValuesToNote();
+
+                    if (note.getId() == 0) {
+                        saveNewNote();
+                    } else {
+                        updateNote();
+                    }
+                    finish();
+                }
+        );
+    }
+
+    private void addValuesToNote() {
+        note.setTitle(
+                binding.noteNameEditText.toString()
+        );
+        note.setDescription(
+                binding.noteContentEditText.getText().toString()
+        );
+    }
+
+    private void saveNewNote() {
+
+        int maxId = UseCaseRepository.notes.stream()
+                .max(Comparator.comparing(Note::getId))
+                .get()
+                .getId();
+
+        UseCaseRepository.notes.add(
+                new Note(
+                        maxId + 1,
+                        note.getTitle(),
+                        note.getDescription()
+                )
+        );
+    }
+
+    private void updateNote() {
+        Note newNote = UseCaseRepository.notes.stream()
+                .filter(oldNote -> oldNote.getId() == note.getId())
+                .findFirst().get();
+
+        newNote.setTitle(note.getTitle());
+        newNote.setDescription(note.getDescription());
     }
 }

@@ -32,14 +32,23 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setUpListView();
+
         setUpListViewItemClick();
         setUpListViewItemLongClick();
         setUpFloatingActionButtonClick();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setUpListView();
+    }
+
     private void setUpListView() {
-        UseCaseRepository.generateDummyNotes(25);
+
+        if (UseCaseRepository.notes.isEmpty()){
+            UseCaseRepository.generateDummyNotes(25);
+        }
 
         notes = UseCaseRepository.notes;
 
