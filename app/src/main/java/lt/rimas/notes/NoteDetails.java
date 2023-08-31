@@ -12,6 +12,7 @@ import lt.rimas.notes.databinding.ActivityNoteDetailsBinding;
 
 public class NoteDetails extends AppCompatActivity {
 
+    private Note note;
     private ActivityNoteDetailsBinding binding;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -22,6 +23,7 @@ public class NoteDetails extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Intent intent = getIntent();
+        int noteId =0;
 //        int id = intent.getIntExtra("id", 0);
 //        String title = intent.getStringExtra("title");
 //        String description = intent.getStringExtra("description");
@@ -30,12 +32,21 @@ public class NoteDetails extends AppCompatActivity {
 //                id + "\n" + "Title: " + title + "\n" + description
 //        );
         if (intent.getExtras() != null) {
-            Note note = intent.getParcelableExtra("note");
-           displayNoteDetails(note);
+            noteId = intent.getIntExtra("note", 0);
+
         }
+        displayNoteDetails(noteId);
     }
 
-    private void displayNoteDetails(Note note) {
+    private void displayNoteDetails(int noteId) {
+
+        if (noteId ==0){
+            note = new Note();
+
+        }else {
+            getNoteFromRepository(noteId);
+
+        }
         binding.noteIdTextView.setText(String.valueOf(note.getId()));
         binding.noteNameEditText.setText(note.getTitle());
         binding.noteContentEditText.setText(note.getDescription());
@@ -45,5 +56,13 @@ public class NoteDetails extends AppCompatActivity {
         binding.noteUpdateDateTextView.setText(
                 note.getUpdateDate() != null ? note.getUpdateDate().format(formatter) : "no data"
         );
+
+    }
+
+    private void getNoteFromRepository(int noteId) {
+        note = UseCaseRepository.notes.stream()
+                 .filter(note -> note.getId() == noteId)
+                 .findFirst()
+                 .get();
     }
 }
