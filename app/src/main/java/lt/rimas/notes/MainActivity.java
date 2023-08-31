@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lt.rimas.notes.databinding.ActivityMainBinding;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "my_notes_main_activity";
     private ActivityMainBinding binding;
     private ArrayAdapter<Note> adapter;
-    private ArrayList<Note> notes;
+    private List<Note> notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +39,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpListView() {
-        notes = new ArrayList<>();
+        UseCaseRepository.generateDummyNotes(25);
 
-        notes.addAll(
-                UseCaseRepository.generateDummyNotes(25)
-        );
+        notes = UseCaseRepository.notes;
+
 
         adapter = new ArrayAdapter<>(
                 this,
@@ -83,6 +83,31 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void openNoteDetailsActivity(Note note) {
+
+
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, note.toString());  ---SEND
+//        sendIntent.setType("text/plain");
+//
+//        Intent shareIntent = Intent.createChooser(sendIntent, null);
+//
+//        startActivity(shareIntent);
+//        String videoId = "0xB3T4MPEr0";
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+//        intent.putExtra("VIDEO_ID", videoId);
+//        startActivity(intent);                        -------YOUTUBE
+        Intent intent = new Intent(this, NoteDetails.class);
+//        intent.putExtra("id", note.getId());
+//        intent.putExtra("title", note.getTitle());
+//        intent.putExtra("description", note.getDescription());
+//        intent.putExtra("creation", note.getCreationDate());
+//        intent.putExtra("updateDate", note.getUpdateDate());
+        intent.putExtra("noteId", note.getId());
+        startActivity(intent);
+
+    }
+
     private void showRemoveAllertDialog(Note note) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.
@@ -108,30 +133,5 @@ public class MainActivity extends AppCompatActivity {
         notes.remove(note);
         adapter.notifyDataSetChanged();
         showSnackbar("Note with id: " + note.getId() + " was removed");
-    }
-
-    private void openNoteDetailsActivity(Note note) {
-
-
-//        sendIntent.setAction(Intent.ACTION_SEND);
-//        sendIntent.putExtra(Intent.EXTRA_TEXT, note.toString());  ---SEND
-//        sendIntent.setType("text/plain");
-//
-//        Intent shareIntent = Intent.createChooser(sendIntent, null);
-//
-//        startActivity(shareIntent);
-//        String videoId = "0xB3T4MPEr0";
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
-//        intent.putExtra("VIDEO_ID", videoId);
-//        startActivity(intent);                        -------YOUTUBE
-        Intent intent = new Intent(this, NoteDetails.class);
-//        intent.putExtra("id", note.getId());
-//        intent.putExtra("title", note.getTitle());
-//        intent.putExtra("description", note.getDescription());
-//        intent.putExtra("creation", note.getCreationDate());
-//        intent.putExtra("updateDate", note.getUpdateDate());
-        intent.putExtra("note", note);
-        startActivity(intent);
-
     }
 }
