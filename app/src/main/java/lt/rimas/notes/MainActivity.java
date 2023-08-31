@@ -125,11 +125,12 @@ public class MainActivity extends AppCompatActivity {
 //        intent.putExtra("VIDEO_ID", videoId);
 //        startActivity(intent);                        -------YOUTUBE
         Intent intent = new Intent(this, NoteDetails.class);
-        intent.putExtra("id", note.getId());
-        intent.putExtra("title", note.getTitle());
-        intent.putExtra("description", note.getDescription());
-        intent.putExtra("creation", note.getCreationDate());
-        intent.putExtra("updateDate", note.getUpdateDate());
+//        intent.putExtra("id", note.getId());
+//        intent.putExtra("title", note.getTitle());
+//        intent.putExtra("description", note.getDescription());
+//        intent.putExtra("creation", note.getCreationDate());
+//        intent.putExtra("updateDate", note.getUpdateDate());
+        intent.putExtra("note", note);
         startActivity(intent);
 
     }

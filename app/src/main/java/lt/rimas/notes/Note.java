@@ -1,9 +1,14 @@
 package lt.rimas.notes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Note {
+public class Note implements Parcelable {
 
     private int id;
     private String title;
@@ -26,6 +31,14 @@ public class Note {
         this.description = description;
         this.creationDate = LocalDateTime.now();
         this.updateDate = LocalDateTime.now();
+    }
+
+    protected Note(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        description = in.readString();
+        creationDate = (LocalDateTime) in.readSerializable();
+        updateDate = (LocalDateTime) in.readSerializable();
     }
 
     public int getId() {
@@ -65,8 +78,34 @@ public class Note {
                 this.id,
                 this.title,
                 this.description,
-                this.creationDate.format(formatter),
-                this.updateDate.format(formatter)
+                this.creationDate != null ? this.creationDate.format(formatter) : "no data",
+                this.updateDate != null ? this.updateDate.format(formatter) : "no data"
         );
+    }
+
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
+
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(title);
+        parcel.writeString(description);
+        parcel.writeSerializable(creationDate);
+        parcel.writeSerializable(updateDate);
     }
 }
