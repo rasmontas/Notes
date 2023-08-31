@@ -53,7 +53,8 @@ public class NoteDetails extends AppCompatActivity {
     private void setUpSaveButtonClick() {
         binding.saveButton.setOnClickListener(
                 v -> {
-
+                    note.setTitle(binding.noteNameEditText.getText().toString());
+                    note.setDescription(binding.noteContentEditText.getText().toString());
                     Intent finishIntent = new Intent();
                     finishIntent.putExtra("note_object_return", note);
                     setResult(RESULT_OK, finishIntent);
