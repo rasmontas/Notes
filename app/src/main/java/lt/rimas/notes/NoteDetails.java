@@ -14,6 +14,7 @@ public class NoteDetails extends AppCompatActivity {
 
     private ActivityNoteDetailsBinding binding;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private Note note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +31,11 @@ public class NoteDetails extends AppCompatActivity {
 //                id + "\n" + "Title: " + title + "\n" + description
 //        );
         if (intent.getExtras() != null) {
-            Note note = intent.getParcelableExtra("note");
-           displayNoteDetails(note);
+            note = intent.getParcelableExtra("note");
+            displayNoteDetails(note);
         }
+
+        setUpSaveButtonClick();
     }
 
     private void displayNoteDetails(Note note) {
@@ -44,6 +47,18 @@ public class NoteDetails extends AppCompatActivity {
         );
         binding.noteUpdateDateTextView.setText(
                 note.getUpdateDate() != null ? note.getUpdateDate().format(formatter) : "no data"
+        );
+    }
+
+    private void setUpSaveButtonClick() {
+        binding.saveButton.setOnClickListener(
+                v -> {
+
+                    Intent finishIntent = new Intent();
+                    finishIntent.putExtra("note_object_return", note);
+                    setResult(RESULT_OK, finishIntent);
+                    finish();
+                }
         );
     }
 }

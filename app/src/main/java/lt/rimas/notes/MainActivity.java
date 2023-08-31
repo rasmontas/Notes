@@ -1,14 +1,14 @@
 package lt.rimas.notes;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -104,12 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void removeNoteFromList(Note note) {
-        notes.remove(note);
-        adapter.notifyDataSetChanged();
-        showSnackbar("Note with id: " + note.getId() + " was removed");
-    }
-
     private void openNoteDetailsActivity(Note note) {
 
 
@@ -131,7 +125,27 @@ public class MainActivity extends AppCompatActivity {
 //        intent.putExtra("creation", note.getCreationDate());
 //        intent.putExtra("updateDate", note.getUpdateDate());
         intent.putExtra("note", note);
-        startActivity(intent);
+//        startActivity(intent);
+        startActivityForReturn.launch(intent);
 
     }
+
+    private void removeNoteFromList(Note note) {
+        notes.remove(note);
+        adapter.notifyDataSetChanged();
+        showSnackbar("Note with id: " + note.getId() + " was removed");
+    }
+
+    ActivityResultLauncher<Intent> startActivityForReturn = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Note note = (Note) data.getParcelableExtra("note_object_return");
+                        Log.i(TAG, "Returned note: " + note.toString());
+                    }
+                }
+            }
+    );
 }
