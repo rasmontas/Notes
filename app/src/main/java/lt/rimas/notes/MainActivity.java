@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import lt.rimas.notes.databinding.ActivityMainBinding;
 
@@ -136,6 +137,22 @@ public class MainActivity extends AppCompatActivity {
         showSnackbar("Note with id: " + note.getId() + " was removed");
     }
 
+    private void addNoteToList(Note note) {
+        notes.add(note);
+        adapter.notifyDataSetChanged();
+        showSnackbar("Note with id: " + note.getId() + " was add");
+    }
+
+    private void updateNoteInList(Note note) {
+        Note newNote = notes.stream()
+                .filter(oldNote -> oldNote.getId() == note.getId())
+                .findFirst().get();
+        newNote.setTitle(note.getTitle());
+        newNote.setDescription(note.getDescription());
+        adapter.notifyDataSetChanged();
+        showSnackbar("Note with id: " + note.getId() + " was updated");
+    }
+
     ActivityResultLauncher<Intent> startActivityForReturn = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -143,7 +160,18 @@ public class MainActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     if (data != null) {
                         Note note = (Note) data.getParcelableExtra("note_object_return");
-                        Log.i(TAG, "Returned note: " + note.toString());
+                        if (note.getId() == 0) {
+                            int maxId = notes
+                                    .stream().max(Comparator.comparing(Note::getId)).get().getId();
+                            Note newNote = new Note(
+                                    maxId + 1,
+                                    note.getTitle(),
+                                    note.getDescription()
+                            );
+                            addNoteToList(newNote);
+                        } else {
+                            updateNoteInList(note);
+                        }
                     }
                 }
             }
