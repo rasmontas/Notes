@@ -18,12 +18,16 @@ import java.util.List;
 
 import lt.rimas.notes.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "my_notes_main_activity";
     private ActivityMainBinding binding;
     private ArrayAdapter<Note> adapter;
     private List<Note> notes;
+
+    public MainActivity() {
+        super("MainActivity", "tst_lfc_main_activity");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

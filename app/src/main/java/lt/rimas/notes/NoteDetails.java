@@ -11,11 +11,15 @@ import java.util.Comparator;
 
 import lt.rimas.notes.databinding.ActivityNoteDetailsBinding;
 
-public class NoteDetails extends AppCompatActivity {
+public class NoteDetails extends BaseActivity {
 
     private Note note;
     private ActivityNoteDetailsBinding binding;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private String demoResult;
+    public NoteDetails() {
+        super("NoteDetails", "tst_lfc_Note_Details_Activity");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,16 @@ public class NoteDetails extends AppCompatActivity {
         }
         displayNoteDetails(noteId);
         setUpSaveButton();
+
+        binding.noteNameEditText.setOnFocusChangeListener(
+                (view, b) -> {
+                    demoResult = binding.noteNameEditText.getText().toString();
+                    print("demoResult: " + demoResult);
+                }
+        );
+        print("demoResult: " + demoResult);
+
+
     }
 
     private void displayNoteDetails(int noteId) {
