@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lt.rimas.notes.databinding.ActivityMainBinding;
+import lt.rimas.notes.repository.MainDataBase;
+import lt.rimas.notes.repository.NoteDao;
 
 public class MainActivity extends BaseActivity {
 
@@ -24,6 +26,7 @@ public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
     private ArrayAdapter<Note> adapter;
     private List<Note> notes;
+    private NoteDao noteDao;
 
     public MainActivity() {
         super("MainActivity", "tst_lfc_main_activity");
@@ -50,13 +53,17 @@ public class MainActivity extends BaseActivity {
 
     private void setUpListView() {
 
-        if (UseCaseRepository.notes.isEmpty()){
+        noteDao = MainDataBase
+                .getInstance(getApplicationContext())
+                .noteDao();
+
+
+        if (notes.isEmpty()) {
             UseCaseRepository.generateDummyNotes(25);
+            noteDao.insertNotes(UseCaseRepository.notes);
         }
 
-        notes = UseCaseRepository.notes;
-
-
+        notes = noteDao.getAll();
         adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,

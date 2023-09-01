@@ -1,26 +1,59 @@
 package lt.rimas.notes;
 
+import static lt.rimas.notes.Note.NOTE_TABLE_NAME;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity (tableName = NOTE_TABLE_NAME)
 public class Note  {
 
+    @Ignore
+    public static final String NOTE_TABLE_NAME = "note";
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "note_id")
     private int id;
+    @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "description")
     private String description;
+    @Ignore
     private LocalDateTime creationDate;
+    @Ignore
     private LocalDateTime updateDate;
+    @Ignore
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    @Ignore
     public Note() {
 
     }
 
+    public Note(
+
+            String title,
+            String description
+    ) {
+
+
+        this.title = title;
+        this.description = description;
+        this.creationDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
+    }
+
+
+    @Ignore
     public Note(
             int id,
             String title,
@@ -63,6 +96,10 @@ public class Note  {
     public void setDescription(String description) {
         this.description = description;
         this.updateDate = LocalDateTime.now();
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
