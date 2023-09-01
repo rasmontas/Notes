@@ -1,19 +1,12 @@
 package lt.rimas.notes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lt.rimas.notes.databinding.ActivityMainBinding;
@@ -58,7 +51,7 @@ public class MainActivity extends BaseActivity {
                 .noteDao();
 
 
-        if (notes.isEmpty()) {
+        if (noteDao.getAll().isEmpty()) {
             UseCaseRepository.generateDummyNotes(25);
             noteDao.insertNotes(UseCaseRepository.notes);
         }
@@ -98,7 +91,8 @@ public class MainActivity extends BaseActivity {
     private void setUpFloatingActionButtonClick() {
         binding.floatingActionButton.setOnClickListener(
                 view -> {
-                    openNoteDetailsActivity(new Note());
+                    Intent intent = new Intent(this, NoteDetails.class);
+                    startActivity(intent);
                 }
         );
     }
@@ -133,7 +127,7 @@ public class MainActivity extends BaseActivity {
         builder.
                 setMessage("Do you really want to remove this item?")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    removeNoteFromList(note);
+                    deleteNote(note);
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -149,7 +143,8 @@ public class MainActivity extends BaseActivity {
                 .show();
     }
 
-    private void removeNoteFromList(Note note) {
+    private void deleteNote(Note note) {
+        noteDao.delete(note);
         notes.remove(note);
         adapter.notifyDataSetChanged();
         showSnackbar("Note with id: " + note.getId() + " was removed");
